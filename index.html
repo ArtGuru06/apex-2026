@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>APEX 2026 — The Ultimate Tech Fest</title>
+  <meta name="description" content="APEX 2026 is the premier college tech fest with exciting club stalls, live leaderboards, and student experiences." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Animated background particles -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="brand-apex">APEX</span><span class="brand-year">2026</span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#" class="nav-link active" data-page="home" id="navHome">Home</a>
+      <a href="#" class="nav-link" data-page="leaderboard" id="navLeaderboard">Leaderboard</a>
+      <a href="#" class="nav-link" data-page="student-login" id="navStudentLogin">Student Portal</a>
+      <a href="#" class="nav-link" data-page="club-login" id="navClubLogin">Club Portal</a>
+    </div>
+    <div class="nav-auth" id="navAuth">
+      <button class="btn-logout hidden" id="btnLogout">Logout</button>
+      <span class="nav-user-badge hidden" id="navUserBadge"></span>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Pages Container -->
+  <main class="main-container" id="mainContainer">
+
+    <!-- ===================== HOME PAGE ===================== -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">🎉 July 2026 • Grand Tech Fest</div>
+          <h1 class="hero-title">
+            <span class="title-line">Welcome to</span>
+            <span class="title-apex">APEX <span class="title-year">2026</span></span>
+          </h1>
+          <p class="hero-subtitle">
+            Experience the ultimate fusion of innovation, creativity, and technology.
+            Explore <span class="highlight-text" id="clubCountDisplay">10+</span> amazing club stalls,
+            rate your experiences, and watch the live leaderboard!
+          </p>
+          <div class="hero-cta">
+            <button class="btn-primary" id="heroStudentBtn">Student Check-in</button>
+            <button class="btn-secondary" id="heroLeaderboardBtn">View Leaderboard</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="orbit-ring ring-1"></div>
+          <div class="orbit-ring ring-2"></div>
+          <div class="orbit-ring ring-3"></div>
+          <div class="hero-center-icon">🏆</div>
+        </div>
+      </div>
+
+      <!-- Live Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-value" id="totalStudents">0</span>
+          <span class="stat-label">Students Checked In</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="totalClubs">0</span>
+          <span class="stat-label">Active Clubs</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="totalRatings">0</span>
+          <span class="stat-label">Ratings Given</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="avgRating">0.0</span>
+          <span class="stat-label">Avg Rating</span>
+        </div>
+      </div>
+
+      <!-- Live Top Clubs Preview -->
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">🔥 Live Rankings</h2>
+          <div class="live-badge">
+            <span class="live-dot"></span> LIVE
+          </div>
+        </div>
+        <div class="clubs-grid" id="homeClubsGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LEADERBOARD PAGE ===================== -->
+    <section class="page" id="page-leaderboard">
+      <div class="page-header">
+        <h1 class="page-title">🏆 Leaderboard</h1>
+        <p class="page-subtitle">Real-time rankings based on student visits and ratings</p>
+        <div class="live-badge large">
+          <span class="live-dot"></span> LIVE
+        </div>
+      </div>
+      <div class="leaderboard-tabs">
+        <button class="tab-btn active" id="tabVisits" data-tab="visits">Most Visited</button>
+        <button class="tab-btn" id="tabRating" data-tab="rating">Highest Rated</button>
+      </div>
+      <div class="leaderboard-container" id="leaderboardContainer">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ===================== STUDENT SIGNUP ===================== -->
+    <section class="page" id="page-student-signup">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-icon">🎓</div>
+          <h2 class="auth-title">Create Student Account</h2>
+          <p class="auth-subtitle">Sign up once, then check in to any club stall</p>
+          <form class="auth-form" id="studentSignupForm">
+            <div class="form-group">
+              <label class="form-label" for="signupName">Full Name</label>
+              <input type="text" id="signupName" class="form-input" placeholder="Enter your full name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupEmail">College Email</label>
+              <input type="email" id="signupEmail" class="form-input" placeholder="yourname@college.edu" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupDept">Department</label>
+              <select id="signupDept" class="form-input form-select" required>
+                <option value="">Select Department</option>
+                <option>Computer Science</option>
+                <option>Electronics</option>
+                <option>Mechanical</option>
+                <option>Civil</option>
+                <option>Information Technology</option>
+                <option>Electrical</option>
+                <option>Chemical</option>
+                <option>MBA</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupYear">Year</label>
+              <select id="signupYear" class="form-input form-select" required>
+                <option value="">Select Year</option>
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupPassword">Password</label>
+              <div class="input-with-icon">
+                <input type="password" id="signupPassword" class="form-input" placeholder="Create a strong password" required />
+                <button type="button" class="toggle-pw" data-target="signupPassword">👁</button>
+              </div>
+            </div>
+            <div id="signupError" class="form-error hidden"></div>
+            <div id="signupSuccess" class="form-success hidden"></div>
+            <button type="submit" class="btn-primary full-width" id="signupBtn">
+              <span class="btn-text">Create Account</span>
+              <span class="btn-loading hidden">Creating...</span>
+            </button>
+          </form>
+          <p class="auth-switch">Already have an account? <a href="#" data-page="student-login" class="auth-link">Login here</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STUDENT LOGIN ===================== -->
+    <section class="page" id="page-student-login">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-icon">🎓</div>
+          <h2 class="auth-title">Student Portal</h2>
+          <p class="auth-subtitle">Login with your student credentials</p>
+          <form class="auth-form" id="studentLoginForm">
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">College Email / Student ID</label>
+              <input type="text" id="loginEmail" class="form-input" placeholder="yourname@college.edu or STUD-XXXXX" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="loginPassword">Password</label>
+              <div class="input-with-icon">
+                <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required />
+                <button type="button" class="toggle-pw" data-target="loginPassword">👁</button>
+              </div>
+            </div>
+            <div id="loginError" class="form-error hidden"></div>
+            <button type="submit" class="btn-primary full-width">Login</button>
+          </form>
+          <p class="auth-switch">New here? <a href="#" data-page="student-signup" class="auth-link">Sign up for free</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STUDENT DASHBOARD ===================== -->
+    <section class="page" id="page-student-dashboard">
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <div>
+            <h1 class="dashboard-title">Welcome back, <span id="studentName">Student</span>! 👋</h1>
+            <p class="dashboard-subtitle">Your Student ID: <code class="id-badge" id="studentIdDisplay">--</code></p>
+          </div>
+          <div class="student-stats">
+            <div class="mini-stat">
+              <span class="mini-stat-val" id="myVisits">0</span>
+              <span class="mini-stat-label">Clubs Visited</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat-val" id="myRatings">0</span>
+              <span class="mini-stat-label">Ratings Given</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Check-in Form -->
+        <div class="checkin-section">
+          <div class="checkin-card">
+            <h3 class="checkin-title">📍 Check In to a Club Stall</h3>
+            <p class="checkin-subtitle">Enter the Club ID displayed at the stall to check in and rate your experience</p>
+            <form class="checkin-form" id="checkinForm">
+              <div class="form-group">
+                <label class="form-label" for="clubIdInput">Club Stall ID</label>
+                <input type="text" id="clubIdInput" class="form-input code-input" placeholder="e.g., CLUB-001" required />
+                <div id="clubPreview" class="club-preview hidden"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Your Experience Rating</label>
+                <div class="star-rating" id="starRating">
+                  <button type="button" class="star" data-val="1">★</button>
+                  <button type="button" class="star" data-val="2">★</button>
+                  <button type="button" class="star" data-val="3">★</button>
+                  <button type="button" class="star" data-val="4">★</button>
+                  <button type="button" class="star" data-val="5">★</button>
+                </div>
+                <p class="rating-label" id="ratingLabel">Click to rate</p>
+                <input type="hidden" id="ratingValue" value="0" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ratingComment">Comment (optional)</label>
+                <textarea id="ratingComment" class="form-input form-textarea" placeholder="Share your thoughts about this stall..."></textarea>
+              </div>
+              <div id="checkinError" class="form-error hidden"></div>
+              <div id="checkinSuccess" class="form-success hidden"></div>
+              <button type="submit" class="btn-primary full-width" id="checkinBtn">Submit Check-in & Rating</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- My Visit History -->
+        <div class="section-container">
+          <h3 class="section-title">📋 My Visit History</h3>
+          <div id="myVisitHistory" class="visit-history">
+            <p class="empty-state">No visits yet. Go explore some stalls! 🚀</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CLUB LOGIN ===================== -->
+    <section class="page" id="page-club-login">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-icon">🏛️</div>
+          <h2 class="auth-title">Club Portal</h2>
+          <p class="auth-subtitle">Login with your club credentials provided by the organizing team</p>
+          <form class="auth-form" id="clubLoginForm">
+            <div class="form-group">
+              <label class="form-label" for="clubLoginId">Club ID</label>
+              <input type="text" id="clubLoginId" class="form-input code-input" placeholder="e.g., CLUB-001" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clubLoginPassword">Club Password</label>
+              <div class="input-with-icon">
+                <input type="password" id="clubLoginPassword" class="form-input" placeholder="Enter club password" required />
+                <button type="button" class="toggle-pw" data-target="clubLoginPassword">👁</button>
+              </div>
+            </div>
+            <div id="clubLoginError" class="form-error hidden"></div>
+            <button type="submit" class="btn-primary full-width">Access Club Dashboard</button>
+          </form>
+          <div class="club-ids-hint">
+            <details>
+              <summary>Demo Club IDs & Passwords</summary>
+              <div class="demo-creds" id="demoCredsTable">Loading...</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CLUB DASHBOARD ===================== -->
+    <section class="page" id="page-club-dashboard">
+      <div class="dashboard-container">
+        <div class="dashboard-header club-header">
+          <div>
+            <h1 class="dashboard-title" id="clubDashTitle">Club Dashboard</h1>
+            <p class="dashboard-subtitle">Club ID: <code class="id-badge" id="clubIdDisplay">--</code></p>
+          </div>
+          <div class="club-rank-badge" id="clubRankBadge">
+            <span class="rank-label">Rank</span>
+            <span class="rank-val" id="clubCurrentRank">#--</span>
+          </div>
+        </div>
+
+        <!-- Live Stats -->
+        <div class="club-stats-grid">
+          <div class="club-stat-card primary">
+            <div class="club-stat-icon">👥</div>
+            <div class="club-stat-val" id="clubTotalStudents">0</div>
+            <div class="club-stat-label">Total Students Visited</div>
+          </div>
+          <div class="club-stat-card success">
+            <div class="club-stat-icon">⭐</div>
+            <div class="club-stat-val" id="clubAvgRating">0.0</div>
+            <div class="club-stat-label">Average Rating</div>
+          </div>
+          <div class="club-stat-card warning">
+            <div class="club-stat-icon">🔥</div>
+            <div class="club-stat-val" id="clubTodayStudents">0</div>
+            <div class="club-stat-label">Today's Visitors</div>
+          </div>
+          <div class="club-stat-card info">
+            <div class="club-stat-icon">💬</div>
+            <div class="club-stat-val" id="clubTotalComments">0</div>
+            <div class="club-stat-label">Comments Received</div>
+          </div>
+        </div>
+
+        <!-- Rating Distribution -->
+        <div class="two-col-grid">
+          <div class="dash-card">
+            <h3 class="dash-card-title">⭐ Rating Distribution</h3>
+            <div class="rating-bars" id="ratingDistribution">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3 class="dash-card-title">📈 Live Visitor Feed</h3>
+            <div class="visitor-feed" id="visitorFeed">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Student List -->
+        <div class="dash-card full-width-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">👥 Student Visitors</h3>
+            <div class="search-bar">
+              <input type="text" id="studentSearch" class="search-input" placeholder="Search students..." />
+            </div>
+          </div>
+          <div class="students-table-wrap">
+            <table class="students-table" id="studentsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Rating</th>
+                  <th>Comment</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+            <div class="empty-table-state hidden" id="emptyTableState">
+              <span>📭</span>
+              <p>No students have visited yet</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <span class="footer-brand"><span class="brand-apex">APEX</span><span class="brand-year">2026</span></span>
+      <span class="footer-text">The Ultimate Tech Fest Experience</span>
+      <span class="footer-live"><span class="live-dot"></span> Live System Active</span>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
