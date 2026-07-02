@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC4UttwhVmEr_GrPCgNKgHVEBxP_JfC-Ew",
@@ -104,10 +104,33 @@ export const DB = {
   getClubs() { return state.clubs; },
   getClubById(id) { return state.clubs.find(c => c.id === id.toUpperCase()); },
   authenticateClub(clubId, password) {
+    if (clubId.trim() === '2517097' && password === 'armaa') {
+      return { club: { id: 'admin', name: 'Admin', role: 'admin' } };
+    }
     const club = this.getClubById(clubId);
     if (!club) return { error: 'Club ID not found.' };
     if (club.passwordHash !== simpleHash(password)) return { error: 'Incorrect passcode.' };
     return { club };
+  },
+
+  async addClub(id, name, category, password) {
+    const clubId = id.toUpperCase().trim();
+    if (this.getClubById(clubId)) return { error: 'Club ID already exists.' };
+    const club = {
+      id: clubId,
+      name: name.trim(),
+      category: category.trim(),
+      icon: '✨',
+      stall: 'TBD',
+      passwordHash: simpleHash(password)
+    };
+    const clubRef = ref(db, `clubs/${clubId}`);
+    await set(clubRef, club);
+    return { club };
+  },
+  async deleteClub(clubId) {
+    const clubRef = ref(db, `clubs/${clubId}`);
+    await remove(clubRef);
   },
 
   getStudents() { return state.students; },
@@ -129,6 +152,25 @@ export const DB = {
     const newRef = push(ref(db, 'students'));
     await set(newRef, student);
     return { student };
+  },
+  async deleteStudent(studentId) {
+    // Find Firebase key for the student
+    let firebaseKey = null;
+    const studentsRef = ref(db, 'students');
+    // Using a one-time fetch to find the key to delete
+    import("https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js").then(async ({ get, child }) => {
+      const snapshot = await get(studentsRef);
+      if (snapshot.exists()) {
+        snapshot.forEach(childSnap => {
+          if (childSnap.val().id === studentId) {
+            firebaseKey = childSnap.key;
+          }
+        });
+        if (firebaseKey) {
+          await remove(ref(db, `students/${firebaseKey}`));
+        }
+      }
+    });
   },
 
   getCheckins() { return state.checkins; },

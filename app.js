@@ -76,6 +76,7 @@ function renderPage(page) {
     case 'leaderboard': renderLeaderboard(); break;
     case 'club-dashboard': renderClubDashboard(); break;
     case 'club-login': renderClubLoginPage(); break;
+    case 'admin': renderAdminPage(); break;
   }
 }
 
@@ -407,11 +408,16 @@ function handleClubLogin(e) {
   const password = document.getElementById('clubLoginPassword').value;
   const result = DB.authenticateClub(clubId, password);
   if (result.error) { errEl.textContent = result.error; errEl.classList.remove('hidden'); return; }
-  currentSession = { type: 'club', id: result.club.id };
+  currentSession = { type: 'club', id: result.club.id, role: result.club.role };
   DB.setSession(currentSession);
   updateNavForSession(currentSession);
-  showToast(`Welcome, ${result.club.name}!`, 'success', '🏛️');
-  navigateTo('club-dashboard');
+  if (result.club.role === 'admin') {
+    showToast(`Welcome, Admin!`, 'success', '🛡️');
+    navigateTo('admin');
+  } else {
+    showToast(`Welcome, ${result.club.name}!`, 'success', '🏛️');
+    navigateTo('club-dashboard');
+  }
 }
 
 async function handleCheckinById(e) {
@@ -579,4 +585,163 @@ function showToast(message, type='info', icon='ℹ️') {
   toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
   container.appendChild(toast);
   setTimeout(() => { toast.classList.add('out'); toast.addEventListener('animationend', () => toast.remove()); }, 3500);
+}
+
+// ─── ADMIN DASHBOARD ───────────────────────────────────────────────────
+
+function renderAdminPage() {
+  if (!currentSession || currentSession.role !== 'admin') { navigateTo('home'); return; }
+
+  // Tabs
+  document.getElementById('tabAdminStudents').onclick = () => {
+    document.getElementById('tabAdminStudents').classList.add('active');
+    document.getElementById('tabAdminClubs').classList.remove('active');
+    document.getElementById('adminStudentsSection').classList.remove('hidden');
+    document.getElementById('adminClubsSection').classList.add('hidden');
+  };
+  document.getElementById('tabAdminClubs').onclick = () => {
+    document.getElementById('tabAdminClubs').classList.add('active');
+    document.getElementById('tabAdminStudents').classList.remove('active');
+    document.getElementById('adminClubsSection').classList.remove('hidden');
+    document.getElementById('adminStudentsSection').classList.add('hidden');
+  };
+
+  // Render Students
+  const students = DB.getStudents();
+  const checkins = DB.getCheckins();
+  document.getElementById('adminStudentsTableBody').innerHTML = students.map(s => {
+    const visits = checkins.filter(c => c.studentId === s.id).length;
+    return `<tr>
+      <td style="font-family:var(--font-mono);color:var(--accent-cyan);">${s.id}</td>
+      <td style="font-weight:600;">${s.name}</td>
+      <td>${s.school}</td>
+      <td>${s.age}</td>
+      <td>${s.phone||'N/A'}</td>
+      <td>${visits}</td>
+      <td><button class="btn-danger delete-student-btn" data-id="${s.id}">Delete</button></td>
+    </tr>`;
+  }).join('');
+
+  // Render Clubs
+  const clubs = DB.getAllClubsSorted();
+  document.getElementById('adminClubsTableBody').innerHTML = clubs.filter(c => c.id !== 'admin').map(c => {
+    return `<tr>
+      <td style="font-family:var(--font-mono);color:var(--accent-cyan);">${c.id}</td>
+      <td style="font-weight:600;">${c.icon} ${c.name}</td>
+      <td>${c.category}</td>
+      <td>${c.total}</td>
+      <td>${c.avgRating}</td>
+      <td><button class="btn-danger delete-club-btn" data-id="${c.id}">Delete</button></td>
+    </tr>`;
+  }).join('');
+
+  // Delete Handlers
+  document.querySelectorAll('.delete-student-btn').forEach(btn => {
+    btn.onclick = async (e) => {
+      const id = e.target.dataset.id;
+      if (confirm(`Are you sure you want to delete student ${id}?`)) {
+        await DB.deleteStudent(id);
+        showToast('Student deleted', 'info', '🗑️');
+      }
+    };
+  });
+  document.querySelectorAll('.delete-club-btn').forEach(btn => {
+    btn.onclick = async (e) => {
+      const id = e.target.dataset.id;
+      if (confirm(`Are you sure you want to delete club ${id}?`)) {
+        await DB.deleteClub(id);
+        showToast('Club deleted', 'info', '🗑️');
+      }
+    };
+  });
+
+  // Export handlers
+  document.getElementById('btnExportStudentsCSV').onclick = () => exportToCSV('students');
+  document.getElementById('btnExportStudentsPDF').onclick = () => exportToPDF('students');
+  document.getElementById('btnExportClubsCSV').onclick = () => exportToCSV('clubs');
+  document.getElementById('btnExportClubsPDF').onclick = () => exportToPDF('clubs');
+}
+
+// Add Forms
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('adminAddStudentForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentSession || currentSession.role !== 'admin') return;
+    const name = document.getElementById('adminStudentName').value;
+    const school = document.getElementById('adminStudentSchool').value;
+    const age = document.getElementById('adminStudentAge').value;
+    const phone = document.getElementById('adminStudentPhone').value;
+    await DB.registerStudent(name, school, age, phone);
+    showToast('Student added successfully', 'success', '✅');
+    e.target.reset();
+  });
+
+  document.getElementById('adminAddClubForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentSession || currentSession.role !== 'admin') return;
+    const id = document.getElementById('adminClubId').value;
+    const name = document.getElementById('adminClubName').value;
+    const category = document.getElementById('adminClubCategory').value;
+    const pass = document.getElementById('adminClubPass').value;
+    const res = await DB.addClub(id, name, category, pass);
+    if (res.error) showToast(res.error, 'error', '❌');
+    else {
+      showToast('Club added successfully', 'success', '✅');
+      e.target.reset();
+    }
+  });
+});
+
+// EXPORT FUNCTIONS
+function exportToCSV(type) {
+  let csv = [];
+  if (type === 'students') {
+    const students = DB.getStudents();
+    csv.push(['ID', 'Name', 'School', 'Age', 'Phone']);
+    students.forEach(s => csv.push([s.id, `"${s.name}"`, `"${s.school}"`, s.age, s.phone]));
+  } else {
+    const clubs = DB.getAllClubsSorted().filter(c => c.id !== 'admin');
+    csv.push(['ID', 'Name', 'Category', 'Total Visitors', 'Avg Rating']);
+    clubs.forEach(c => csv.push([c.id, `"${c.name}"`, `"${c.category}"`, c.total, c.avgRating]));
+  }
+  
+  const csvContent = "data:text/csv;charset=utf-8," + csv.map(e => e.join(",")).join("\n");
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `apex2026_${type}_export.csv`);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+function exportToPDF(type) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(18);
+  doc.text(`APEX 2026 - ${type === 'students' ? 'Students' : 'Clubs'} Export`, 14, 22);
+  
+  let head = [];
+  let body = [];
+  
+  if (type === 'students') {
+    const students = DB.getStudents();
+    head = [['ID', 'Name', 'School', 'Age', 'Phone']];
+    body = students.map(s => [s.id, s.name, s.school, s.age, s.phone||'']);
+  } else {
+    const clubs = DB.getAllClubsSorted().filter(c => c.id !== 'admin');
+    head = [['ID', 'Name', 'Category', 'Total Visitors', 'Avg Rating']];
+    body = clubs.map(c => [c.id, c.name, c.category, c.total, c.avgRating]);
+  }
+  
+  doc.autoTable({
+    startY: 30,
+    head: head,
+    body: body,
+    theme: 'grid',
+    headStyles: { fillColor: [124, 58, 237] }
+  });
+  
+  doc.save(`apex2026_${type}_export.pdf`);
 }

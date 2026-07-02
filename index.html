@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- jsPDF for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
   <div class="bg-particles" id="bgParticles"></div>
@@ -337,6 +340,132 @@
     </section>
 
   </main>
+
+  <!-- ===================== ADMIN PAGE ===================== -->
+  <section class="page" id="page-admin">
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title" style="color: var(--accent-pink);">🛡️ Admin Dashboard</h1>
+          <p class="dashboard-subtitle">Full access to manage clubs and students</p>
+        </div>
+        <div class="club-rank-badge" style="border-color: var(--accent-pink);">
+          <span class="rank-label" style="color: var(--accent-pink);">System Access</span>
+          <span class="rank-val" style="font-size: 1.5rem; background: var(--accent-pink); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ADMIN</span>
+        </div>
+      </div>
+
+      <div class="leaderboard-tabs" style="margin-bottom: 2rem;">
+        <button class="tab-btn active" id="tabAdminStudents" data-tab="admin-students">Manage Students</button>
+        <button class="tab-btn" id="tabAdminClubs" data-tab="admin-clubs">Manage Clubs</button>
+      </div>
+
+      <!-- Admin Students Tab -->
+      <div id="adminStudentsSection">
+        <div class="dash-card full-width-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">👥 All Students</h3>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-secondary" id="btnExportStudentsCSV" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📥 CSV</button>
+              <button class="btn-secondary" id="btnExportStudentsPDF" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📥 PDF</button>
+            </div>
+          </div>
+          <!-- Add Student Form -->
+          <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1rem;">
+            <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--accent-cyan);">➕ Add Student Manually</h4>
+            <form id="adminAddStudentForm" class="form-row" style="align-items: flex-end;">
+              <div class="form-group flex-1">
+                <label class="form-label">Name</label>
+                <input type="text" id="adminStudentName" class="form-input" required />
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">School</label>
+                <input type="text" id="adminStudentSchool" class="form-input" required />
+              </div>
+              <div class="form-group" style="width: 80px;">
+                <label class="form-label">Age</label>
+                <input type="number" id="adminStudentAge" class="form-input" min="5" max="99" required />
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Phone</label>
+                <input type="text" id="adminStudentPhone" class="form-input" required />
+              </div>
+              <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem;">Add</button>
+            </form>
+          </div>
+
+          <div class="students-table-wrap">
+            <table class="students-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>School</th>
+                  <th>Age</th>
+                  <th>Phone</th>
+                  <th>Check-ins</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminStudentsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Clubs Tab -->
+      <div id="adminClubsSection" class="hidden">
+        <div class="dash-card full-width-card">
+          <div class="dash-card-header">
+            <h3 class="dash-card-title">🏛️ All Clubs</h3>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-secondary" id="btnExportClubsCSV" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📥 CSV</button>
+              <button class="btn-secondary" id="btnExportClubsPDF" style="padding: 0.4rem 1rem; font-size: 0.8rem;">📥 PDF</button>
+            </div>
+          </div>
+          <!-- Add Club Form -->
+          <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1rem;">
+            <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--accent-cyan);">➕ Add New Club</h4>
+            <form id="adminAddClubForm" class="form-row" style="align-items: flex-end;">
+              <div class="form-group flex-1">
+                <label class="form-label">Club ID</label>
+                <input type="text" id="adminClubId" class="form-input" placeholder="e.g. CLUB-013" required />
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Name</label>
+                <input type="text" id="adminClubName" class="form-input" required />
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Category</label>
+                <input type="text" id="adminClubCategory" class="form-input" required />
+              </div>
+              <div class="form-group flex-1">
+                <label class="form-label">Passcode</label>
+                <input type="text" id="adminClubPass" class="form-input" required />
+              </div>
+              <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem;">Add</button>
+            </form>
+          </div>
+
+          <div class="students-table-wrap">
+            <table class="students-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Total Visitors</th>
+                  <th>Avg Rating</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminClubsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Toast -->
   <div class="toast-container" id="toastContainer"></div>
