@@ -1,13 +1,20 @@
-/**
- * APEX 2026 — Data Layer v2
- * Students are registered by clubs, get a 4-digit random ID.
- * No student login — clubs handle everything.
- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC4UttwhVmEr_GrPCgNKgHVEBxP_JfC-Ew",
+  authDomain: "apex-2026-1be79.firebaseapp.com",
+  databaseURL: "https://apex-2026-1be79-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "apex-2026-1be79",
+  storageBucket: "apex-2026-1be79.firebasestorage.app",
+  messagingSenderId: "460903986564",
+  appId: "1:460903986564:web:01a1d92c51282da5fb99d1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 const STORAGE_KEYS = {
-  STUDENTS: 'apex2026_students_v2',
-  CLUBS: 'apex2026_clubs_v2',
-  CHECKINS: 'apex2026_checkins_v2',
   SESSION: 'apex2026_session_v2',
 };
 
@@ -26,7 +33,6 @@ const INITIAL_CLUBS = [
   { id: 'CLUB-012', name: 'PhotonLab',   password: 'photo012',  icon: '📷', category: 'Photography',        stall: 'Hall F-2' },
 ];
 
-// Simple hash for passwords
 function simpleHash(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -36,31 +42,67 @@ function simpleHash(str) {
   return hash.toString(36);
 }
 
-// Generate random 4-digit ID not already in use
+let state = {
+  students: [],
+  clubs: [],
+  checkins: []
+};
+
+let dataLoaded = false;
+let dataLoadCallbacks = [];
+
+export function onDataLoaded(cb) {
+  if (dataLoaded) cb();
+  else dataLoadCallbacks.push(cb);
+}
+
+// Initialize listeners
+const studentsRef = ref(db, 'students');
+onValue(studentsRef, (snapshot) => {
+  const data = snapshot.val() || {};
+  state.students = Object.values(data);
+  window.dispatchEvent(new Event('apex-data-update'));
+});
+
+const checkinsRef = ref(db, 'checkins');
+onValue(checkinsRef, (snapshot) => {
+  const data = snapshot.val() || {};
+  state.checkins = Object.values(data);
+  window.dispatchEvent(new Event('apex-data-update'));
+});
+
+const clubsRef = ref(db, 'clubs');
+onValue(clubsRef, (snapshot) => {
+  const data = snapshot.val();
+  if (!data) {
+    // Seed clubs
+    const clubsObj = {};
+    INITIAL_CLUBS.forEach(c => {
+      clubsObj[c.id] = { ...c, passwordHash: simpleHash(c.password) };
+    });
+    set(clubsRef, clubsObj);
+  } else {
+    state.clubs = Object.values(data);
+    if (!dataLoaded) {
+      dataLoaded = true;
+      dataLoadCallbacks.forEach(cb => cb());
+    }
+    window.dispatchEvent(new Event('apex-data-update'));
+  }
+});
+
 function generateStudentId() {
-  const students = DB.getStudents();
-  const usedIds = new Set(students.map(s => s.id));
+  const usedIds = new Set(state.students.map(s => s.id));
   let id;
   do {
-    id = String(Math.floor(1000 + Math.random() * 9000)); // 1000-9999
+    id = String(Math.floor(1000 + Math.random() * 9000));
   } while (usedIds.has(id));
   return id;
 }
 
-const DB = {
-  // ── Clubs ──
-  getClubs() {
-    const stored = localStorage.getItem(STORAGE_KEYS.CLUBS);
-    if (!stored) {
-      const clubs = INITIAL_CLUBS.map(c => ({ ...c, passwordHash: simpleHash(c.password) }));
-      localStorage.setItem(STORAGE_KEYS.CLUBS, JSON.stringify(clubs));
-      return clubs;
-    }
-    return JSON.parse(stored);
-  },
-  getClubById(id) {
-    return this.getClubs().find(c => c.id === id.toUpperCase());
-  },
+export const DB = {
+  getClubs() { return state.clubs; },
+  getClubById(id) { return state.clubs.find(c => c.id === id.toUpperCase()); },
   authenticateClub(clubId, password) {
     const club = this.getClubById(clubId);
     if (!club) return { error: 'Club ID not found.' };
@@ -68,27 +110,14 @@ const DB = {
     return { club };
   },
 
-  // ── Students ──
-  getStudents() {
-    const stored = localStorage.getItem(STORAGE_KEYS.STUDENTS);
-    return stored ? JSON.parse(stored) : [];
-  },
-  saveStudents(students) {
-    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
-  },
-  getStudentById(id) {
-    return this.getStudents().find(s => s.id === id);
-  },
+  getStudents() { return state.students; },
+  getStudentById(id) { return state.students.find(s => s.id === id); },
   searchStudents(name, school) {
-    const students = this.getStudents();
     const n = name.toLowerCase().trim();
     const s = school.toLowerCase().trim();
-    return students.filter(st =>
-      st.name.toLowerCase() === n && st.school.toLowerCase() === s
-    );
+    return state.students.filter(st => st.name.toLowerCase() === n && st.school.toLowerCase() === s);
   },
-  registerStudent(name, school, age, phone) {
-    const students = this.getStudents();
+  async registerStudent(name, school, age, phone) {
     const student = {
       id: generateStudentId(),
       name: name.trim(),
@@ -97,23 +126,14 @@ const DB = {
       phone: phone.trim(),
       createdAt: new Date().toISOString(),
     };
-    students.push(student);
-    this.saveStudents(students);
+    const newRef = push(ref(db, 'students'));
+    await set(newRef, student);
     return { student };
   },
 
-  // ── Check-ins ──
-  getCheckins() {
-    const stored = localStorage.getItem(STORAGE_KEYS.CHECKINS);
-    return stored ? JSON.parse(stored) : [];
-  },
-  saveCheckins(checkins) {
-    localStorage.setItem(STORAGE_KEYS.CHECKINS, JSON.stringify(checkins));
-    window.dispatchEvent(new Event('apex-data-update'));
-  },
-  addCheckin(studentId, clubId, rating, comment) {
-    const checkins = this.getCheckins();
-    const dup = checkins.find(c => c.studentId === studentId && c.clubId === clubId);
+  getCheckins() { return state.checkins; },
+  async addCheckin(studentId, clubId, rating, comment) {
+    const dup = state.checkins.find(c => c.studentId === studentId && c.clubId === clubId);
     if (dup) return { error: 'This student has already been checked in to this stall.' };
     const checkin = {
       id: `CHK-${Date.now()}`,
@@ -123,27 +143,19 @@ const DB = {
       comment: comment || '',
       timestamp: new Date().toISOString(),
     };
-    checkins.push(checkin);
-    this.saveCheckins(checkins);
+    const newRef = push(ref(db, 'checkins'));
+    await set(newRef, checkin);
     return { checkin };
   },
-  getCheckinsByClub(clubId) {
-    return this.getCheckins().filter(c => c.clubId === clubId);
-  },
+  getCheckinsByClub(clubId) { return state.checkins.filter(c => c.clubId === clubId); },
 
-  // ── Session ──
   getSession() {
     const stored = sessionStorage.getItem(STORAGE_KEYS.SESSION);
     return stored ? JSON.parse(stored) : null;
   },
-  setSession(session) {
-    sessionStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(session));
-  },
-  clearSession() {
-    sessionStorage.removeItem(STORAGE_KEYS.SESSION);
-  },
+  setSession(session) { sessionStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(session)); },
+  clearSession() { sessionStorage.removeItem(STORAGE_KEYS.SESSION); },
 
-  // ── Stats ──
   getClubStats(clubId) {
     const checkins = this.getCheckinsByClub(clubId);
     const today = new Date().toDateString();
@@ -185,8 +197,5 @@ const DB = {
       totalVisits: checkins.length,
       avgRating,
     };
-  },
+  }
 };
-
-// Initialize clubs on load
-DB.getClubs();

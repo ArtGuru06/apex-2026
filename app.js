@@ -4,6 +4,8 @@
  * Students identified by 4-digit ID or name+school.
  */
 
+import { DB, onDataLoaded } from './data.js';
+
 let currentPage = 'home';
 let currentSession = null;
 let selectedRatingId = 0;
@@ -15,10 +17,13 @@ let isNewStudent = false;
 document.addEventListener('DOMContentLoaded', () => {
   initParticles();
   initNavbar();
-  restoreSession();
   setupEventListeners();
-  navigateTo('home');
-  startLiveUpdates();
+  
+  onDataLoaded(() => {
+    restoreSession();
+    navigateTo('home');
+    startLiveUpdates();
+  });
 });
 
 // ─── Particles ──────────────────────────────────────────────────────────
@@ -104,7 +109,6 @@ function handleLogout() {
 // ─── Live Updates ───────────────────────────────────────────────────────
 function startLiveUpdates() {
   window.addEventListener('apex-data-update', () => renderPage(currentPage));
-  setInterval(() => { window.dispatchEvent(new Event('apex-data-update')); }, 5000);
 }
 
 // ─── HOME PAGE ──────────────────────────────────────────────────────────
@@ -410,7 +414,7 @@ function handleClubLogin(e) {
   navigateTo('club-dashboard');
 }
 
-function handleCheckinById(e) {
+async function handleCheckinById(e) {
   e.preventDefault();
   const errEl = document.getElementById('checkinIdError');
   const sucEl = document.getElementById('checkinIdSuccess');
@@ -426,7 +430,7 @@ function handleCheckinById(e) {
   if (rating < 1 || rating > 5) { errEl.textContent = 'Please select a rating (1–5 stars).'; errEl.classList.remove('hidden'); return; }
 
   const comment = document.getElementById('commentId').value.trim();
-  const result = DB.addCheckin(studentId, currentSession.id, rating, comment);
+  const result = await DB.addCheckin(studentId, currentSession.id, rating, comment);
   if (result.error) { errEl.textContent = result.error; errEl.classList.remove('hidden'); return; }
 
   sucEl.textContent = `✅ ${student.name} (ID: ${student.id}) checked in with ${rating}-star rating!`;
@@ -498,7 +502,7 @@ function handleSearchStudent() {
   }
 }
 
-function handleCheckinByName(e) {
+async function handleCheckinByName(e) {
   e.preventDefault();
   const errEl = document.getElementById('checkinNameError');
   const sucEl = document.getElementById('checkinNameSuccess');
@@ -530,13 +534,13 @@ function handleCheckinByName(e) {
       errEl.classList.remove('hidden');
       return;
     }
-    const regResult = DB.registerStudent(name, school, age, phone);
+    const regResult = await DB.registerStudent(name, school, age, phone);
     student = regResult.student;
     showToast(`New student registered! ID: ${student.id}`, 'success', '🆕');
   }
 
   // Add check-in
-  const result = DB.addCheckin(student.id, currentSession.id, rating, comment);
+  const result = await DB.addCheckin(student.id, currentSession.id, rating, comment);
   if (result.error) { errEl.textContent = result.error; errEl.classList.remove('hidden'); return; }
 
   sucEl.innerHTML = `✅ <strong>${student.name}</strong> (ID: <code style="font-family:var(--font-mono);color:var(--accent-cyan);font-weight:700;font-size:1.1em;">${student.id}</code>) checked in! ${isNewStudent ? '— Share this ID with the student for future visits.' : ''}`;
