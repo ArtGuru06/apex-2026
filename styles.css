@@ -346,7 +346,8 @@ body {
   position: fixed;
   right: 2rem;
   top: 5.5rem;
-  bottom: 2rem;
+  height: max-content;
+  max-height: calc(100vh - 8rem);
   width: 300px;
   background: #D4FF00;
   border: 3px solid var(--border);
@@ -358,7 +359,7 @@ body {
   z-index: 100;
   font-family: var(--font-mono);
   color: #000;
-  overflow-y: auto;
+  overflow: hidden; /* No scrollbars on a physical ticket! */
   border-radius: 4px;
 }
 .sidebar-header {
