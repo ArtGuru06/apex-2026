@@ -244,7 +244,8 @@ body {
   color: #000;
   top: 0;
   left: 0;
-  transform: rotate(-3deg);
+  transform: scale(0.7) rotate(-3deg);
+  transform-origin: top left;
 }
 .sticker-orange .sticker-bold {
   display: block;
@@ -276,7 +277,8 @@ body {
   color: #000;
   bottom: 0;
   right: 0;
-  transform: rotate(2deg);
+  transform: scale(0.7) rotate(2deg);
+  transform-origin: bottom right;
   text-align: center;
 }
 .ticket-top {
