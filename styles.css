@@ -221,6 +221,8 @@ body {
   letter-spacing: -2px;
   margin: 0;
   text-transform: uppercase;
+  position: relative;
+  z-index: 20;
 }
 
 /* STICKERS */
@@ -231,7 +233,7 @@ body {
   font-family: var(--font-mono);
   box-shadow: 4px 4px 0 0 rgba(0,0,0,1);
   text-transform: uppercase;
-  z-index: 10;
+  z-index: 5;
 }
 .sticker-orange {
   background: #FF6B35;
