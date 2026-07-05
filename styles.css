@@ -84,7 +84,7 @@ body {
    NAVBAR — thick bottom border, cream bg, editorial
    ============================================================ */
 .navbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  position: fixed; top: 0; left: 0; width: calc(100% - 320px); z-index: 1000;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2.5rem; height: 64px;
   background: var(--bg-primary);
@@ -175,118 +175,265 @@ body {
 .page.active { display: block; }
 
 /* ============================================================
-   HERO — archival, structured, editorial feel
+   DOSSIER HOME PAGE — brutalist, massive typography, archive
    ============================================================ */
-.hero {
+.faded-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background-image: url('bg.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+}
+body {
+  background-color: var(--bg-primary);
+}
+
+.dossier-layout {
+  position: relative;
+  z-index: 1;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4rem;
-  padding: 5rem 4rem 4rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  border-bottom: 3px solid var(--border);
+  min-height: 100vh;
+  padding-right: 320px;
 }
-.hero-content { flex: 1; max-width: 700px; }
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.8rem;
-  background: var(--text-primary);
-  border: none;
-  color: var(--bg-primary);
-  margin-bottom: 1.5rem;
-  animation: fadeSlideUp 0.8s ease forwards;
-}
-.hero-title {
+
+/* LEFT CONTENT AREA */
+.dossier-main {
+  flex: 1;
+  padding: 4rem 4rem;
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
-  margin-bottom: 1.5rem;
 }
-.title-line {
-  font-size: 1.1rem;
-  font-weight: 400;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  animation: fadeSlideUp 0.9s ease forwards;
-}
-.title-apex {
-  font-size: clamp(4rem, 10vw, 8rem);
-  font-weight: 400;
-  font-family: var(--font-display);
-  line-height: 0.9;
-  color: var(--text-primary);
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: var(--text-primary);
-  background-clip: unset;
-  letter-spacing: 0.04em;
-  animation: fadeSlideUp 1s ease forwards;
-}
-.title-year {
-  color: var(--accent-orange);
-  -webkit-text-fill-color: var(--accent-orange);
-  opacity: 1;
-}
-.hero-subtitle {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  margin-bottom: 2.5rem;
-  line-height: 1.9;
-  font-weight: 400;
-  max-width: 560px;
-  animation: fadeSlideUp 1.1s ease forwards;
-}
-.highlight-text {
-  color: var(--accent-orange);
-  font-weight: 700;
-  font-family: var(--font-mono);
-  font-size: 0.9em;
-  background: rgba(232, 93, 43, 0.08);
-  padding: 0.1em 0.3em;
-  border-bottom: 2px solid var(--accent-orange);
-}
-.hero-cta {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  animation: fadeSlideUp 1.2s ease forwards;
-}
-.hero-visual {
+
+.massive-header {
   position: relative;
-  flex-shrink: 0;
-  width: 280px;
-  height: 280px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.giant-text {
+  font-family: var(--font-display);
+  font-size: 18vw;
+  line-height: 0.8;
+  color: var(--text-primary);
+  letter-spacing: -2px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* STICKERS */
+.sticker {
+  position: absolute;
+  padding: 1rem;
+  border: 3px solid var(--border);
+  font-family: var(--font-mono);
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,1);
+  text-transform: uppercase;
+  z-index: 10;
+}
+.sticker-orange {
+  background: #FF6B35;
+  color: #000;
+  top: -20px;
+  left: 5%;
+  transform: rotate(-5deg);
+}
+.sticker-orange .sticker-bold {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+.sticker-orange .sticker-sub {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.sticker-barcode {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.2rem;
+  color: #000;
+}
+.sticker-id {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.sticker-green {
+  background: #C4E538;
+  color: #000;
+  bottom: -10px;
+  right: 5%;
+  transform: rotate(4deg);
+  text-align: center;
+}
+.ticket-top {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.ticket-year {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  line-height: 1;
+  margin: 0.2rem 0;
+}
+.ticket-date {
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* SUBTITLE AREA */
+.dossier-subtitle-area {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 3px solid var(--border);
-  background: var(--bg-secondary);
+  gap: 2rem;
+  margin: 1rem 0;
 }
-.orbit-ring {
-  position: absolute;
-  border: 2px solid var(--border-light);
-  animation: rotateRing linear infinite;
+.dossier-year-large {
+  font-family: var(--font-display);
+  font-size: 8rem;
+  line-height: 0.8;
+  color: var(--text-primary);
 }
-.ring-1 { width: 160px; height: 160px; animation-duration: 20s; border-color: var(--border-light); border-radius: 50%; }
-.ring-2 { width: 220px; height: 220px; animation-duration: 30s; animation-direction: reverse; border-color: rgba(232, 93, 43, 0.2); border-radius: 50%; }
-.ring-3 { width: 270px; height: 270px; animation-duration: 45s; border-color: rgba(180, 212, 41, 0.2); border-radius: 50%; }
-@keyframes rotateRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.hero-center-icon {
-  font-size: 3.5rem;
-  animation: pulse 3s ease-in-out infinite;
-  filter: none;
+.dossier-subtitle-text h2 {
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: var(--text-primary);
+  text-transform: uppercase;
 }
-@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+.dossier-divider {
+  border: 0;
+  border-top: 4px solid var(--border);
+  margin: 20px 0;
+}
+.dossier-divider.thin {
+  border-top: 2px solid var(--border);
+}
+
+.dossier-intro {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  line-height: 1.5;
+  font-size: 1rem;
+  color: var(--text-primary);
+  max-width: 800px;
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+/* RIGHT GREEN SIDEBAR */
+.dossier-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  background: #D4FF00;
+  border-left: 4px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  z-index: 100;
+  font-family: var(--font-mono);
+  color: #000;
+  overflow-y: auto;
+}
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 3px solid #000;
+  padding-bottom: 1rem;
+}
+.sidebar-brand-box {
+  background: #000;
+  color: #D4FF00;
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  padding: 0.2rem 0.5rem;
+  align-self: flex-start;
+  line-height: 1;
+}
+.sidebar-brand-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.sidebar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+.meta-item {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 0.5rem;
+  align-items: start;
+}
+.meta-icon {
+  font-size: 1.2rem;
+}
+.meta-label {
+  grid-column: 2;
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  opacity: 0.6;
+}
+.meta-value {
+  grid-column: 2;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.meta-value.highlight-red {
+  color: var(--accent-red);
+  background: rgba(192, 57, 43, 0.1);
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--accent-red);
+  display: inline-block;
+}
+
+.sidebar-footer {
+  margin-top: 2rem;
+  border-top: 3px solid #000;
+  padding-top: 1rem;
+  text-align: center;
+}
+.sidebar-large-barcode {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.sidebar-footer-text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.confidential-text {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background: #000;
+  color: #D4FF00;
+  padding: 0.2rem 0.5rem;
+}
 
 /* ============================================================
    BUTTONS — flat, bold, uppercase, thick borders

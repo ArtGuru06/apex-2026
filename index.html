@@ -18,13 +18,14 @@
 
   <!-- Navigation -->
   <nav class="navbar" id="navbar">
-    <div class="nav-brand" id="navBrandHome">
-      <span class="brand-apex" style="font-size:1.4rem;">GNE'S APEX</span><span class="brand-year" style="font-size:1.4rem;">2026</span>
+    <div class="nav-brand" id="navBrandHome" style="display:flex; align-items:center; gap:10px;">
+      <span class="brand-apex" style="font-size:1.8rem; font-weight:700; letter-spacing:1px; border-right:2px solid var(--border); padding-right:10px;">GNE'S APEX</span>
+      <span class="brand-year" style="font-size:0.8rem; font-family:var(--font-mono); color:var(--text-secondary); letter-spacing:0; max-width:200px; line-height:1.2;">GURU NANAK DEV ENGINEERING COLLEGE LUDHIANA</span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="#" class="nav-link active" data-page="home" id="navHome">FILE: ABOUT</a>
-      <a href="#" class="nav-link" data-page="events" id="navEvents">FILE: EVENTS</a>
-      <a href="#" class="nav-link" data-page="leaderboard" id="navLeaderboard">FILE: LEADERBOARD</a>
+      <a href="#" class="nav-link active" data-page="home" id="navHome">ABOUT</a>
+      <a href="#" class="nav-link" data-page="events" id="navEvents">EVENTS</a>
+      <a href="#" class="nav-link" data-page="leaderboard" id="navLeaderboard">LEADERBOARD</a>
       <a href="#" class="nav-link" data-page="club-login" id="navClubLogin">CLUB LOGIN</a>
     </div>
     <div class="nav-auth" id="navAuth">
@@ -40,40 +41,117 @@
 
     <!-- ===================== HOME PAGE ===================== -->
     <section class="page active" id="page-home">
-      <div class="hero">
-        <div class="hero-content">
-          <div class="hero-badge">📅 30 October 2026 • GNDEC Ludhiana</div>
-          <h1 class="hero-title">
-            <span class="title-line">A New File Has Been Opened.</span>
-            <span class="title-apex">GNE'S APEX <span class="title-year">2026</span></span>
-          </h1>
-          <p class="hero-subtitle" style="text-transform: uppercase; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.8;">
-            THIS ARCHIVE DOCUMENTS AN EXHILARATING AND HIGHLY AWAITED INTER-SCHOOL MULTI-EVENT COMPETITION, PROUDLY ORGANIZED BY THE ESTEEMED CAUSMIC CLUB UNDER THE AEGIS OF THE DEPARTMENT OF APPLIED SCIENCES, GURU NANAK DEV ENGINEERING COLLEGE, LUDHIANA.
-          </p>
-          <div class="hero-cta">
-            <button class="btn-primary" id="heroLeaderboardBtn">VIEW LEADERBOARD</button>
-            <button class="btn-secondary" id="heroClubBtn">CLUB LOGIN</button>
+      <!-- Background Faded Image -->
+      <div class="faded-bg"></div>
+
+      <!-- Main Dossier Layout -->
+      <div class="dossier-layout">
+        
+        <!-- Left Content Area -->
+        <div class="dossier-main">
+          
+          <!-- Massive Header Area -->
+          <div class="massive-header">
+            <!-- Orange Sticker -->
+            <div class="sticker sticker-orange">
+              <span class="sticker-bold">HANDLE<br/>WITH<br/>CARE</span>
+              <span class="sticker-sub">THE FUTURE<br/>IS FRAGILE</span>
+              <div class="sticker-barcode">||||||||||||||||||||||</div>
+              <span class="sticker-id">APEX26-0001</span>
+            </div>
+
+            <!-- The Big Text -->
+            <h1 class="giant-text">APEX</h1>
+
+            <!-- Green Ticket Sticker -->
+            <div class="sticker sticker-green">
+              <span class="ticket-top">CLASS<br/>OF</span>
+              <span class="ticket-year">2028</span>
+              <div class="sticker-barcode">||||||||||||||||||||||</div>
+              <span class="ticket-date">30 OCT 2026</span>
+            </div>
+          </div>
+
+          <!-- Divider Line -->
+          <hr class="dossier-divider" />
+
+          <!-- Subtitle Area -->
+          <div class="dossier-subtitle-area">
+            <div class="dossier-year-large">'26</div>
+            <div class="dossier-subtitle-text">
+              <h2>A NEW FILE<br/>HAS BEEN OPENED.</h2>
+            </div>
+          </div>
+
+          <!-- Divider Line -->
+          <hr class="dossier-divider thin" />
+
+          <!-- Intro Paragraph -->
+          <div class="dossier-intro">
+            <p>
+              THIS ARCHIVE DOCUMENTS AN EXHILARATING AND HIGHLY AWAITED INTER-SCHOOL MULTI-EVENT COMPETITION, PROUDLY ORGANIZED BY THE ESTEEMED CAUSMIC CLUB UNDER THE AEGIS OF THE DEPARTMENT OF APPLIED SCIENCES, GURU NANAK DEV ENGINEERING COLLEGE, LUDHIANA. WHAT FOLLOWS IS NOT JUST AN EVENT. IT IS A DELIBERATE TRANSFER OF CURIOSITY, COMMUNITY, AND CULTURE — FROM THOSE WHO CAME BEFORE YOU, TO YOU.
+            </p>
           </div>
         </div>
-        <div class="hero-visual gallery-grid" style="border:none; background:transparent; display:grid; grid-template-columns: 1fr 1fr; gap:10px; width:400px; height:auto; overflow:visible;">
-          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=300" alt="GNDEC Event 1" style="width:100%; aspect-ratio:1; object-fit:cover; border:3px solid var(--border); box-shadow: 4px 4px 0 0 var(--border); transform: rotate(-2deg);" />
-          <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=300" alt="GNDEC Event 2" style="width:100%; aspect-ratio:1; object-fit:cover; border:3px solid var(--border); box-shadow: 4px 4px 0 0 var(--accent-orange); transform: rotate(1deg); margin-top:20px;" />
-          <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=300" alt="GNDEC Event 3" style="width:100%; aspect-ratio:1; object-fit:cover; border:3px solid var(--border); box-shadow: 4px 4px 0 0 var(--accent-green); transform: rotate(3deg); margin-top:-20px;" />
-          <img src="https://images.unsplash.com/photo-1523580494112-071d16940d14?w=300" alt="GNDEC Event 4" style="width:100%; aspect-ratio:1; object-fit:cover; border:3px solid var(--border); box-shadow: 4px 4px 0 0 var(--border); transform: rotate(-1deg);" />
-        </div>
+
+        <!-- Right Green Sidebar -->
+        <aside class="dossier-sidebar">
+          <div class="sidebar-header">
+            <span class="sidebar-brand-box">APEX</span>
+            <span class="sidebar-brand-text">GURU NANAK DEV ENGINEERING COLLEGE, LUDHIANA</span>
+          </div>
+          
+          <div class="sidebar-meta">
+            <div class="meta-item">
+              <span class="meta-icon">📄</span>
+              <span class="meta-label">DOCUMENT ID:</span>
+              <span class="meta-value">APEX26-2028</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">📅</span>
+              <span class="meta-label">GENERATION:</span>
+              <span class="meta-value">2026</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">ℹ️</span>
+              <span class="meta-label">STATUS:</span>
+              <span class="meta-value highlight-red">CONFIRMED</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">📍</span>
+              <span class="meta-label">LOCATION:</span>
+              <span class="meta-value">GNDEC LUDHIANA</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">🎯</span>
+              <span class="meta-label">COORDINATES:</span>
+              <span class="meta-value">30.8604° N,<br/>75.8600° E</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">🕒</span>
+              <span class="meta-label">LAST UPDATED:</span>
+              <span class="meta-value">30 OCTOBER 2026</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">👥</span>
+              <span class="meta-label">CLASS SIZE:</span>
+              <span class="meta-value">~500+</span>
+            </div>
+          </div>
+
+          <div class="sidebar-footer">
+            <div class="sidebar-large-barcode">||||||||||||||||||||||||||||||||||||||</div>
+            <div class="sidebar-footer-text">
+              APEX 2026<br/>
+              3 02026 30200 6<br/>
+              --- BATCH 2026-2030 ---<br/>
+              <span class="confidential-text">CONFIDENTIAL WHEN PRINTED</span>
+            </div>
+          </div>
+        </aside>
+
       </div>
 
-      <div class="section-container" style="max-width:900px; margin: 4rem auto;">
-        <div class="section-header">
-          <h2 class="section-title">INTRODUCTION</h2>
-        </div>
-        <p style="font-size: 0.95rem; line-height: 1.8; color: var(--text-secondary); margin-bottom:1.5rem;">
-          GNE’S APEX 2026 aims to extend the college’s educational vision beyond its campus walls, promoting deeper inter-institutional bonds and offering a platform for students from various schools to explore, express, and evolve. Adding color and vibrancy to the day, the APEX FAIR will transform the campus into a festive wonderland filled with cultural performances, decorative lights, and the joyous spirit of this festival season. The fair will feature an engaging assortment of stalls offering traditional crafts, festive delicacies, fun games, and interactive activities to delight every visitor.
-        </p>
-        <p style="font-size: 0.95rem; line-height: 1.8; color: var(--text-secondary);">
-          At the core of GNE’S APEX 2026 is the heartfelt intention to discover and nurture the hidden talents of young learners. By participating in a wide range of events and competitions, students will have the chance to express their abilities in a welcoming and empowering environment.
-        </p>
-      </div>
 
     </section>
 
