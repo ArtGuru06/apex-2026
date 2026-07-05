@@ -202,7 +202,6 @@ body {
 .dossier-main {
   flex: 1;
   padding: 4rem 4rem;
-  padding-right: 350px;
   display: flex;
   flex-direction: column;
 }
@@ -343,9 +342,9 @@ body {
 
 /* RIGHT GREEN SIDEBAR (LONG TICKET) */
 .dossier-sidebar {
-  position: absolute;
-  right: 2rem;
-  top: 2rem;
+  position: relative;
+  margin: 4rem 2rem 2rem 0;
+  flex-shrink: 0;
   height: max-content;
   width: 300px;
   background: #D4FF00;
@@ -1701,8 +1700,7 @@ details[open] summary { color: var(--accent-orange); border-bottom-color: var(--
   .dossier-sidebar { 
     position: relative; 
     width: 100%; 
-    right: 0; top: 0; bottom: 0;
-    margin-top: 2rem;
+    margin: 2rem 0 0 0;
     border: 3px solid var(--border);
     border-top: 6px dashed var(--border); /* Tear-off on top for mobile */
     border-left: 3px solid var(--border);
