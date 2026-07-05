@@ -211,36 +211,41 @@ body {
   position: relative;
   margin-top: 2rem;
   margin-bottom: 2rem;
+  container-type: inline-size;
+  padding: 2rem 1rem;
 }
 
 .giant-text {
   font-family: var(--font-display);
-  font-size: 18vw;
-  line-height: 0.8;
+  font-size: 30cqw;
+  line-height: 0.85;
   color: var(--text-primary);
   letter-spacing: -2px;
   margin: 0;
   text-transform: uppercase;
   position: relative;
-  z-index: 20;
+  z-index: 5;
+  text-align: center;
 }
 
 /* STICKERS */
 .sticker {
   position: absolute;
   padding: 1rem;
-  border: 3px solid var(--border);
+  border: 2px solid var(--border);
   font-family: var(--font-mono);
-  box-shadow: 4px 4px 0 0 rgba(0,0,0,1);
+  box-shadow: none; /* Flat printed look */
   text-transform: uppercase;
-  z-index: 5;
+  z-index: 10;
+  mix-blend-mode: multiply; /* Makes it look like printed translucent ink */
+  opacity: 0.95;
 }
 .sticker-orange {
   background: #FF6B35;
   color: #000;
-  top: -20px;
-  left: 5%;
-  transform: rotate(-5deg);
+  top: 0;
+  left: 0;
+  transform: rotate(-3deg);
 }
 .sticker-orange .sticker-bold {
   display: block;
@@ -270,9 +275,9 @@ body {
 .sticker-green {
   background: #C4E538;
   color: #000;
-  bottom: -10px;
-  right: 5%;
-  transform: rotate(4deg);
+  bottom: 0;
+  right: 0;
+  transform: rotate(2deg);
   text-align: center;
 }
 .ticket-top {
