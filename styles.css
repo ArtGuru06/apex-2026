@@ -341,22 +341,25 @@ body {
   font-weight: 700;
 }
 
-/* RIGHT GREEN SIDEBAR */
+/* RIGHT GREEN SIDEBAR (LONG TICKET) */
 .dossier-sidebar {
   position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 320px;
+  right: 2rem;
+  top: 5.5rem;
+  bottom: 2rem;
+  width: 300px;
   background: #D4FF00;
-  border-left: 4px solid var(--border);
+  border: 3px solid var(--border);
+  border-left: 6px dashed var(--border); /* Perforated tear-off edge */
+  box-shadow: 6px 6px 0 0 rgba(0,0,0,1); /* Physical printed look */
   display: flex;
   flex-direction: column;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem;
   z-index: 100;
   font-family: var(--font-mono);
   color: #000;
   overflow-y: auto;
+  border-radius: 4px;
 }
 .sidebar-header {
   display: flex;
@@ -1695,7 +1698,16 @@ details[open] summary { color: var(--accent-orange); border-bottom-color: var(--
   .navbar { width: 100%; }
   .dossier-layout { padding-right: 0; flex-direction: column; }
   .dossier-main { padding: 4rem 2rem; }
-  .dossier-sidebar { position: relative; width: 100%; border-left: none; border-top: 4px solid var(--border); }
+  .dossier-sidebar { 
+    position: relative; 
+    width: 100%; 
+    right: 0; top: 0; bottom: 0;
+    margin-top: 2rem;
+    border: 3px solid var(--border);
+    border-top: 6px dashed var(--border); /* Tear-off on top for mobile */
+    border-left: 3px solid var(--border);
+    box-shadow: 4px 4px 0 0 rgba(0,0,0,1);
+  }
   .giant-text { font-size: 28vw; margin-top: 2rem; }
   .sticker-orange { top: -10px; left: -10px; transform: scale(0.8) rotate(-5deg); }
   .sticker-green { bottom: -10px; right: -10px; transform: scale(0.8) rotate(4deg); }
